@@ -8,6 +8,13 @@
       "salt": "gSCTsjBUU3QlZX7kWdrWhA==",
       "iv": "scR3iDOFb01sFhV1",
       "ct": "b+6NL1ZINZAnlDGm+p0/Z35OdNYSYYoBT04TX6kW0gpyOteJATRtJ1S8P8de2tVHjqnO6XSzCX8TLXdsNW/4jdXqq//YVsK2wcs3xo0Kc/id65FH7Ldq8OQZwL6JkF6x6QkqijGd1zB2sLHuUw=="
+    },
+    {
+      "id": "gamja",
+      "role": "member",
+      "salt": "r9hxI/V6gu9RG6HPdorMvg==",
+      "iv": "00c4e88vUdt82VeJ",
+      "ct": "1a7ikdRli3lfAT/QLIGsvKCAKUmn9Ph3gdw1tyzQmrH4k5TW/DL8INzf6hw33H/DOcsP2nIp2cAvtl5pLQEwFJNA1CAlmcoeqJcKaXwJ9uFS6Mp3VdJBPsyAQb8HFzSm6oWGNZA+RRqQ23qfIw=="
     }
   ]
 }
