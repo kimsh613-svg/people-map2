@@ -15,6 +15,13 @@
       "salt": "dW/uTtD0PGEnqibNxGIfEg==",
       "iv": "CHM3nJHCngzLMkFj",
       "ct": "eOgFXsNGrh0ti6hZtwUq/OKc8pbTv1d1EIx0H4Fv7IWgzbQDxE+YNIZo/Lf/gX23JtOtTlKEwW72qGM213a8nj2TW5lfcCDW6Bdlb5nblMwxRts42lNvekif8QLsojDrJHFdwnqyt6aFkK2ZBw=="
+    },
+    {
+      "id": "city",
+      "role": "member",
+      "salt": "iwKyAt5txQfM9IYLInXsPQ==",
+      "iv": "Ui9m4gFv27uSdxz4",
+      "ct": "AU7I/TY0eK5RlxhMHUNTBKi9uozcXz68FbEcm02AoTQAmKDtsYSokGVLceYPk6XSuY72nItwGk6CnUJTdXriGZvObphvRLAUL3QPCwcdtNwDeVlOAPaVCr42udlj/3jRZ+dIT/hBWAHrDCdNSg=="
     }
   ]
 }
