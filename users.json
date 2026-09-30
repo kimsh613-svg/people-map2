@@ -22,6 +22,13 @@
       "salt": "iwKyAt5txQfM9IYLInXsPQ==",
       "iv": "Ui9m4gFv27uSdxz4",
       "ct": "AU7I/TY0eK5RlxhMHUNTBKi9uozcXz68FbEcm02AoTQAmKDtsYSokGVLceYPk6XSuY72nItwGk6CnUJTdXriGZvObphvRLAUL3QPCwcdtNwDeVlOAPaVCr42udlj/3jRZ+dIT/hBWAHrDCdNSg=="
+    },
+    {
+      "id": "zatty",
+      "role": "member",
+      "salt": "4F3b/f5hkgI66Bl8pSNTQw==",
+      "iv": "r45kkKFQA0JwFlPA",
+      "ct": "xEw2g9WpKRs5cHDlL22/ZcJTTI5wtnxMCAmRTBtvGNqpc6tTC8jszn4dSfVeaZ4UTKiprMwd2Ul1gmLtYA3nqUKrparImqkKtRqW3Lfqdtiz3ctFwkW9RlQNsQHN3BD8D8ENGHaHTT4P+GJWZg=="
     }
   ]
 }
