@@ -268,6 +268,8 @@ if (!SITE.owner && location.hostname.endsWith(".github.io")) {
   SITE.owner = location.hostname.split(".")[0];
   SITE.repo  = location.pathname.split("/").filter(Boolean)[0] || `${SITE.owner}.github.io`;
 }
+// 같은 github.io 주소 아래 페이지들은 브라우저 저장공간을 같이 쓰므로, 페이지(레포)마다 따로 저장
+const SESSION_KEY = `peopleMap.${SITE.repo}.session`;
 const USERS_FILE = "users.json";   // 공개 레포: 아이디 + 비밀번호로 잠근 토큰 (비밀번호 없이는 못 엶)
 const DATA_FILE  = "data.json";    // 비공개 레포: 관계도 + 작업 기록
 
@@ -279,8 +281,8 @@ const TYPES = {
   brokecouple: {name:"헤어짐", color:"#090917"},
   ssome: {name:"썸타는중", color:"#ff70de"},
   sasim: {name:"사심", color:"#c02ee8"},
-  distance: {name:"거리두기", color:"#302423"},
-
+  hostile: { name:"적대",     color:"#d0342c" },
+  cut:     { name:"손절",     color:"#555555", dashes:[8,6] },
 };
 let relTypes = new Set(["close"]);
 function toggleRelType(k) { relTypes.has(k) ? relTypes.delete(k) : relTypes.add(k); renderChips(); }
@@ -371,7 +373,7 @@ const siteRepo = () => `${SITE.owner}/${SITE.repo}`;
 async function start() {
   cfg = await loadUsers();
   if (!cfg) { setupScreen.classList.add("show"); return; }
-  const saved = store.get("peopleMap.session", null);
+  const saved = store.get(SESSION_KEY, null);
   const u = saved && cfg.users.find(x => x.id === saved.id);
   if (u) { token = saved.token; me = u; enter(); }
   else loginScreen.classList.add("show");
@@ -389,7 +391,7 @@ async function setup() {
     cfg = await updateFile(siteRepo(), USERS_FILE, SITE.branch, cur => cur || first, `관리자 계정 생성: ${id}`);
     me = cfg.users.find(u => u.id === id);
     if (!me) throw new Error("이미 설정되어 있어요. 새로고침 후 로그인하세요.");
-    store.set("peopleMap.session", { id, token }); setupScreen.classList.remove("show"); enter();
+    store.set(SESSION_KEY, { id, token }); setupScreen.classList.remove("show"); enter();
   } catch (e) { token = ""; setupMsg.textContent = "실패: " + e.message + " (레포 이름과 토큰 권한을 확인하세요)"; }
 }
 async function login() {
@@ -399,10 +401,10 @@ async function login() {
   loginMsg.textContent = "확인 중…";
   try { token = await unlockToken(u, pw); }
   catch (e) { loginMsg.textContent = "아이디 또는 비밀번호가 틀렸어요."; return; }
-  me = u; store.set("peopleMap.session", { id, token }); loginPw.value = ""; loginMsg.textContent = "";
+  me = u; store.set(SESSION_KEY, { id, token }); loginPw.value = ""; loginMsg.textContent = "";
   loginScreen.classList.remove("show"); enter();
 }
-function logout() { store.del("peopleMap.session"); location.reload(); }
+function logout() { store.del(SESSION_KEY); location.reload(); }
 function enter() {
   pending = store.get(pendingKey(), []);
   whoName.textContent = `${me.id}${me.role === "admin" ? " (관리자)" : ""}`;
@@ -485,12 +487,16 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", 
    그래서 여러 사람이 동시에 작업해도 서로의 변경을 지우지 않고, 적용될 때마다 작업 기록이 남습니다. */
 let remote = { nodes:[], edges:[], log:[] };
 let pending = [];
-const pendingKey = () => `peopleMap.pending.${me?.id}`;
+const pendingKey = () => `peopleMap.${SITE.repo}.pending.${me?.id}`;
 function applyOps(base, ops) {
   const d = { nodes:[...(base.nodes||[])], edges:[...(base.edges||[])], log:[...(base.log||[])] };
   for (const op of ops) {
     let text = null;
     if (op.op === "addNode" && !d.nodes.some(n => n.id === op.node.id)) { d.nodes.push(op.node); text = `인물 추가: ${op.node.label}`; }
+    if (op.op === "moveNode") {   // 위치 이동은 작업 기록에 남기지 않음
+      const i = d.nodes.findIndex(n => n.id === op.id);
+      if (i >= 0) d.nodes[i] = { ...d.nodes[i], x:op.x, y:op.y };
+    }
     if (op.op === "delNode" && d.nodes.some(n => n.id === op.id)) {
       d.nodes = d.nodes.filter(n => n.id !== op.id);
       d.edges = d.edges.filter(e => e.from !== op.id && e.to !== op.id);
@@ -555,7 +561,10 @@ const network = new vis.Network(document.getElementById("map"), { nodes, edges }
   nodes: { shape:"box", margin:10, font:{ size:15 }, borderWidth:1.5, shapeProperties:{ borderRadius:8 },
            color:{ background:"#ffffff", border:"#888", highlight:{ background:"#fff", border:"#222" } } },
   edges: { smooth:{ type:"continuous" }, selectionWidth:2 },
-  physics: { solver:"forceAtlas2Based", forceAtlas2Based:{ springLength:160, gravitationalConstant:-60 } },
+  // 자리가 정해지지 않은 사람만 처음에 한 번 배치하고(화면에 보이기 전에 끝남), 그 뒤로는 움직이지 않음
+  physics: { enabled:false, solver:"forceAtlas2Based", forceAtlas2Based:{ springLength:160, gravitationalConstant:-60 },
+             stabilization:{ enabled:true, iterations:400, fit:true } },
+  layout: { randomSeed: 7 },
   interaction: { hover: matchMedia("(hover:hover)").matches, zoomView:true, dragView:true },
 });
 // 같은 두 사람 사이에 관계가 여러 개면 선을 서로 다른 곡선으로 벌려서 모두 보이게
@@ -585,7 +594,13 @@ function render(updateStatus = true) {
   if (focusPerson && !view.nodes.some(n => n.id === focusPerson)) focusOn(null, false);
   const near = new Set([focusPerson]);
   if (focusPerson) view.edges.forEach(e => { if (e.from === focusPerson) near.add(e.to); if (e.to === focusPerson) near.add(e.from); });
-  sync(nodes, view.nodes.map(n => ({ id:n.id, label:n.label, hidden: !!focusPerson && !near.has(n.id) })));
+  const unplaced = view.nodes.filter(n => n.x === undefined && !nodes.get(n.id)).length;
+  sync(nodes, view.nodes.map(n => {
+    const o = { id:n.id, label:n.label, hidden: !!focusPerson && !near.has(n.id) };
+    if (n.x !== undefined) { o.x = n.x; o.y = n.y; }
+    return o;
+  }));
+  if (unplaced > 1) autoPlace();   // 예전에 추가돼서 자리가 없는 사람들이 있으면 한 번만 자동 배치
   sync(edges, spreadParallel(view.edges.map(e => {
     const st = styleEdge(e);
     if (focusPerson && e.from !== focusPerson && e.to !== focusPerson) st.hidden = true;
@@ -671,7 +686,9 @@ function focusOn(name, rerender = true) {
 function addPerson() {
   const name = pName.value.trim(); if (!name) return;
   if (nodes.get(name)) { setStatus("이미 있는 이름이에요", "err"); return; }
-  push({ op:"addNode", node:{ id:name, label:name } });
+  const c = network.getViewPosition();
+  push({ op:"addNode", node:{ id:name, label:name,
+         x: Math.round(c.x + (Math.random() - .5) * 160), y: Math.round(c.y + (Math.random() - .5) * 160) } });
   pName.value = "";
   if (isPhone()) { toggleSheet(false); setStatus(`'${name}' 추가됨`); }
 }
@@ -736,6 +753,34 @@ function showSelection(sel) {
   }
 }
 function clearSelection() { firstPick = null; network.unselectAll(); showSelection(null); }
+/* 자동 배치: 물리 계산을 화면 밖에서 끝까지 돌린 뒤 멈춤 → 애니메이션 없음 */
+let autoPlacing = false;
+function autoPlace() {
+  if (autoPlacing) return;
+  autoPlacing = true;
+  network.setOptions({ physics:{ enabled:true } });
+  network.stabilize(400);
+}
+network.on("stabilizationIterationsDone", () => {
+  network.setOptions({ physics:{ enabled:false } });
+  if (!autoPlacing) return;
+  autoPlacing = false;
+  network.fit();
+  // 자동으로 정한 자리를 저장해서 모두가 같은 배치를 보게 함
+  if (!me) return;
+  const saved = new Set(applyOps(remote, pending).nodes.filter(n => n.x !== undefined).map(n => n.id));
+  const pos = network.getPositions();
+  for (const id of Object.keys(pos)) if (!saved.has(id)) pending.push({ op:"moveNode", id, x:Math.round(pos[id].x), y:Math.round(pos[id].y) });
+  store.set(pendingKey(), pending); scheduleSave();
+});
+
+/* 사람을 끌어다 놓으면 그 자리에 고정하고 모두에게 저장 */
+network.on("dragEnd", p => {
+  if (!p.nodes.length || !me) return;
+  const pos = network.getPositions(p.nodes);
+  for (const id of p.nodes) push({ op:"moveNode", id, x:Math.round(pos[id].x), y:Math.round(pos[id].y) });
+});
+
 network.on("click", p => {
   if (side.classList.contains("open")) toggleSheet(false);   // 휴대폰: 지도를 누르면 패널 닫기
   if (p.nodes.length) {
