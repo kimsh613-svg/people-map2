@@ -29,6 +29,13 @@
       "salt": "4F3b/f5hkgI66Bl8pSNTQw==",
       "iv": "r45kkKFQA0JwFlPA",
       "ct": "xEw2g9WpKRs5cHDlL22/ZcJTTI5wtnxMCAmRTBtvGNqpc6tTC8jszn4dSfVeaZ4UTKiprMwd2Ul1gmLtYA3nqUKrparImqkKtRqW3Lfqdtiz3ctFwkW9RlQNsQHN3BD8D8ENGHaHTT4P+GJWZg=="
+    },
+    {
+      "id": "boong",
+      "role": "member",
+      "salt": "MsZbrqqZ4eJjWDuUEKJtxA==",
+      "iv": "2pzQ+vGqAWGWvVpm",
+      "ct": "vv3WmQRTtDHhKFSdiGkyRvlOe6NH9f46Fp0OJ+Dow+XkrwzlY91541dTWz/dvuT4q6kqvM8me7qfBhfZuqJ3anSTsGY5fdegTWx9SYj3vSWkgq/oKE9+Rq4evnNEFpF9yAzxlZKHf7ygg0Clog=="
     }
   ]
 }
