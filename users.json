@@ -1,0 +1,13 @@
+{
+  "dataRepo": "kimsh613-svg/people-map2-data",
+  "dataBranch": "main",
+  "users": [
+    {
+      "id": "aritail",
+      "role": "admin",
+      "salt": "gSCTsjBUU3QlZX7kWdrWhA==",
+      "iv": "scR3iDOFb01sFhV1",
+      "ct": "b+6NL1ZINZAnlDGm+p0/Z35OdNYSYYoBT04TX6kW0gpyOteJATRtJ1S8P8de2tVHjqnO6XSzCX8TLXdsNW/4jdXqq//YVsK2wcs3xo0Kc/id65FH7Ldq8OQZwL6JkF6x6QkqijGd1zB2sLHuUw=="
+    }
+  ]
+}
