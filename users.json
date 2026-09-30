@@ -8,6 +8,13 @@
       "salt": "gSCTsjBUU3QlZX7kWdrWhA==",
       "iv": "scR3iDOFb01sFhV1",
       "ct": "b+6NL1ZINZAnlDGm+p0/Z35OdNYSYYoBT04TX6kW0gpyOteJATRtJ1S8P8de2tVHjqnO6XSzCX8TLXdsNW/4jdXqq//YVsK2wcs3xo0Kc/id65FH7Ldq8OQZwL6JkF6x6QkqijGd1zB2sLHuUw=="
+    },
+    {
+      "id": "lilla",
+      "role": "member",
+      "salt": "gkH1tyEcY2x56qZ1xK27wQ==",
+      "iv": "tn3yYAR+MKuxkq/q",
+      "ct": "OhVqpFzYz+FqJ7C3zo1Z3eUKznHiTnJriI3Cth8Itz93l/qh4JK2jcSJORnKnoJgq8e8o+zyznSBo4yew2vT+069euS8U2ZPGOB8ZWPOpPbKHPn/mIedh4uWdz8D8FmHM7p24xPvXIfCTQubxw=="
     }
   ]
 }
