@@ -281,8 +281,8 @@ const TYPES = {
   brokecouple: {name:"헤어짐", color:"#090917"},
   ssome: {name:"썸타는중", color:"#ff70de"},
   sasim: {name:"사심", color:"#c02ee8"},
-  hostile: { name:"적대",     color:"#d0342c" },
-  cut:     { name:"손절",     color:"#555555", dashes:[8,6] },
+  distance: {name:"거리두기", color:"#302423"},
+
 };
 let relTypes = new Set(["close"]);
 function toggleRelType(k) { relTypes.has(k) ? relTypes.delete(k) : relTypes.add(k); renderChips(); }
