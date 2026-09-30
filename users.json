@@ -36,6 +36,13 @@
       "salt": "MsZbrqqZ4eJjWDuUEKJtxA==",
       "iv": "2pzQ+vGqAWGWvVpm",
       "ct": "vv3WmQRTtDHhKFSdiGkyRvlOe6NH9f46Fp0OJ+Dow+XkrwzlY91541dTWz/dvuT4q6kqvM8me7qfBhfZuqJ3anSTsGY5fdegTWx9SYj3vSWkgq/oKE9+Rq4evnNEFpF9yAzxlZKHf7ygg0Clog=="
+    },
+    {
+      "id": "lilla",
+      "role": "member",
+      "salt": "2JAvX6zgEAapIa1b/VfxqQ==",
+      "iv": "SHC9M81KRLAaMKhJ",
+      "ct": "G6iJ75DMUZEBZFkGVhctIDBsnWeUN8tfUDLzwsK1pvTlhCzfXD8glPOF0K8JGsCmlPIFEne0PYBNEkQt/10pH77qqKMgelG7ukvGCpnDm+rC/h8mDmo3CfEQmcn45dG+sUkR9m45A/WM2t+wKg=="
     }
   ]
 }
